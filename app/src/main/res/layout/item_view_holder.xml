@@ -57,5 +57,16 @@
         app:layout_constraintStart_toEndOf="@id/profile_image"
         app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
+    <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/btn_star"
+            app:layout_constraintStart_toEndOf="@id/profile_image"
+            app:layout_constraintTop_toTopOf="@id/profile_image"
+            app:layout_constraintBottom_toBottomOf="@id/profile_image"
+            android:layout_marginStart="168dp"
+            app:layout_constraintVertical_bias="0.538" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_nav_ships_to_nav_launches"
             app:destination="@id/nav_launches" />
+        <action
+                android:id="@+id/action_nav_ships_to_nav_fav"
+                app:destination="@id/nav_fav" />
     </fragment>
 
     <fragment
