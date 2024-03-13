@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--  Changes the size, font and weight of the title text inside the tool bar -->
+    <style name="ActionBarTextAppearance" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/bankgothic_regular</item>
+    </style>
+
+    <!--  Used for the drawer styling -->
+    <style name="CustomTextStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/bankgothic_regular</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_ships">
+
+    <fragment
+        android:id="@+id/nav_ships"
+        android:name="com.mikeschvedov.spacex.ui.ships.listscreen.ShipsFragment"
+        android:label="@string/ships"
+        tools:layout="@layout/fragment_ships" >
+
+        <action
+            android:id="@+id/action_nav_ships_to_nav_ships_details"
+            app:destination="@id/nav_ships_details" />
+        <action
+            android:id="@+id/action_nav_ships_to_nav_launches"
+            app:destination="@id/nav_launches" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_launches"
+        android:name="com.mikeschvedov.spacex.ui.launches.listscreen.LaunchesFragment"
+        android:label="@string/launches"
+        tools:layout="@layout/fragment_launches" >
+
+        <action
+            android:id="@+id/action_nav_launches_to_nav_launches_details"
+            app:destination="@id/nav_launches_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_launches_details"
+        android:name="com.mikeschvedov.spacex.ui.launches.detailscreen.LaunchDetailsFragment"
+        android:label="Launch Details"
+        tools:layout="@layout/fragment_details_launches" >
+        <action
+            android:id="@+id/action_nav_launches_details_to_nav_ships_details"
+            app:destination="@id/nav_ships_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_ships_details"
+        android:name="com.mikeschvedov.spacex.ui.ships.detailscreen.ShipsDetailsFragment"
+        android:label="Ship Details"
+        tools:layout="@layout/fragment_details_ships" >
+        <action
+            android:id="@+id/action_nav_ships_details_to_nav_launches_details"
+            app:destination="@id/nav_launches_details" />
+    </fragment>
+</navigation>
