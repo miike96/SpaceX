@@ -49,4 +49,9 @@
             android:id="@+id/action_nav_ships_details_to_nav_launches_details"
             app:destination="@id/nav_launches_details" />
     </fragment>
+    <fragment
+            android:id="@+id/nav_fav"
+            android:name="com.mikeschvedov.spacex.FavoritesFragment"
+            android:label="fragment_favorites"
+            tools:layout="@layout/fragment_favorites" />
 </navigation>

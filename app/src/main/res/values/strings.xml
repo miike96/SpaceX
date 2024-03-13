@@ -36,4 +36,7 @@
     <string name="extraLaunch">lanzamientoSeleccionado</string>
     <string name="worker_already_exist">El trabajador ya está inicializado, no es necesario crear más de uno</string>
     <string name="is_worker_activated">esTrabajadorActivado</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="favorites">Favoritos</string>
 </resources>
