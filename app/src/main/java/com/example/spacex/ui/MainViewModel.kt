@@ -10,7 +10,4 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     val liveNetworkMonitor: LiveNetworkMonitor,
     val networkStatusChecker: NetworkStatusChecker
-): ViewModel() {
-
-
-}
+): ViewModel()

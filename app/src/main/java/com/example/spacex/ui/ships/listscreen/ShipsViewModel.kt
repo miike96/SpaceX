@@ -29,13 +29,11 @@ class ShipsViewModel @Inject constructor(
     private val _selectedShip = MutableLiveData<SingleEvent<Ship>>()
     val selectedShip: LiveData<SingleEvent<Ship>> get() = _selectedShip
 
-    // TODO this should probably be in the main activity's view model
     fun updateDB() {
         viewModelScope.launch {
             contentMediator.updateDBFromApi()
         }
     }
-
 
     fun searchInDB(searchQuery: String) {
         viewModelScope.launch {
@@ -54,7 +52,6 @@ class ShipsViewModel @Inject constructor(
                 }
         }
     }
-
 
     fun getShipsAdapter(): ShipsAdapter {
         return adapter

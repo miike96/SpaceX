@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_ships">
+    app:startDestination="@id/nav_notice">
 
     <fragment
         android:id="@+id/nav_ships"
@@ -31,12 +31,15 @@
         <action
             android:id="@+id/action_nav_launches_to_nav_launches_details"
             app:destination="@id/nav_launches_details" />
+        <action
+                android:id="@+id/action_nav_launches_to_nav_login"
+                app:destination="@id/nav_login" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_launches_details"
         android:name="com.example.spacex.ui.launches.detailscreen.LaunchDetailsFragment"
-        android:label="Launch Details"
+        android:label="@string/launch_details"
         tools:layout="@layout/fragment_details_launches" >
         <action
             android:id="@+id/action_nav_launches_details_to_nav_ships_details"
@@ -46,7 +49,7 @@
     <fragment
         android:id="@+id/nav_ships_details"
         android:name="com.example.spacex.ui.ships.detailscreen.ShipsDetailsFragment"
-        android:label="Ship Details"
+        android:label="@string/ships_details"
         tools:layout="@layout/fragment_details_ships" >
         <action
             android:id="@+id/action_nav_ships_details_to_nav_launches_details"
@@ -54,7 +57,21 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fav"
-            android:name="com.example.spacex.FavoritesFragment"
-            android:label="fragment_favorites"
+            android:name="com.example.spacex.ui.favorites.FavoritesFragment"
+            android:label="@string/favorites"
             tools:layout="@layout/fragment_favorites" />
+    <fragment
+            android:id="@+id/nav_notice"
+            android:name="com.example.spacex.ui.tab.NoticeFragment"
+            android:label="@string/notices"
+            tools:layout="@layout/fragment_notice" >
+        <action
+                android:id="@+id/action_nav_notice_to_nav_ships2"
+                app:destination="@id/nav_ships" />
+    </fragment>
+    <fragment
+            android:id="@+id/nav_login"
+            android:name="com.example.spacex.ui.login.LoginFragment"
+            android:label="@string/login"
+            tools:layout="@layout/fragment_login" />
 </navigation>

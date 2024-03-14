@@ -17,26 +17,27 @@ class LaunchDetailsViewModel @Inject constructor(
     private val contentMediator: ContentMediator
 ): ViewModel() {
 
-    // We are using a Ship adapter inside the Launch details page
-    private val adapter = MiniShipAdapter() { shipCallback ->
-        _selectedShip.postValue(SingleEvent(shipCallback))
+    // Adapter for ships inside the Launch details page
+    private val adapter = MiniShipAdapter { shipCallback ->
+        _selectedShip.value = SingleEvent(shipCallback)
     }
-    // When we click on a ship inside the details page
+    // LiveData for selected ship
     private val _selectedShip = MutableLiveData<SingleEvent<Ship>>()
     val selectedShip: LiveData<SingleEvent<Ship>> get() = _selectedShip
 
     private val _listOfShips = MutableLiveData<List<Ship>>()
     val listOfShips: LiveData<List<Ship>> get() = _listOfShips
 
+    // Retrieve ships by their IDs
     fun getShipsByIds(shipsIds: List<String>) {
         viewModelScope.launch {
-            contentMediator.getShipsByIds(shipsIds)
-                .collect {
-                    _listOfShips.postValue(it)
-                }
+            contentMediator.getShipsByIds(shipsIds).collect {
+                _listOfShips.value = it
+            }
         }
     }
 
+    // Provide the ship adapter
     fun getAdapter(): MiniShipAdapter {
         return adapter
     }

@@ -3,21 +3,18 @@ package com.example.spacex.ui.launches.listscreen
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.core.os.bundleOf
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.spacex.R
 import com.example.spacex.data.database.entities.Launch
 import com.example.spacex.databinding.FragmentLaunchesBinding
-import com.example.spacex.utils.helper_classes.SingleEvent
-import com.example.spacex.utils.enums.SortingType
 import com.example.spacex.utils.adapters.LaunchesAdapter
+import com.example.spacex.utils.enums.SortingType
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class LaunchesFragment : Fragment() {
@@ -25,127 +22,94 @@ class LaunchesFragment : Fragment() {
     private var _binding: FragmentLaunchesBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var launchesViewModel: LaunchesViewModel
+    private val viewModel: LaunchesViewModel by viewModels()
 
-    lateinit var adapter: LaunchesAdapter
-
-    var currentSortingType: SortingType = SortingType.ByTitle
+    private lateinit var adapter: LaunchesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        /* ViewModel */
-        launchesViewModel =
-            ViewModelProvider(this).get(LaunchesViewModel::class.java)
-
-        /* Binding */
         _binding = FragmentLaunchesBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
 
-        /* Adapter */
-        adapter = launchesViewModel.getLaunchesAdapter()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupViews()
+        setupObservers()
+    }
+
+    private fun setupViews() {
+        adapter = LaunchesAdapter { clickedLaunch ->
+            viewModel.selectLaunch(clickedLaunch)
+        }
         binding.launchesRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.launchesRecyclerview.adapter = adapter
 
-        /* Setup Menu */
-        setupMenu()
-
-        setupChips()
-
-        /* Display the data on the UI */
-        launchesViewModel.searchInDB("", SortingType.ByTitle)
-
-        /* Setting Observers */
-        observers()
-
-        return root
-    }
-
-    private fun setupChips() {
-        binding.sortingChip.text = getString(R.string.sortedbytitle)
-
-        // Go to top of list when clicked
         binding.goToTopChip.setOnClickListener {
             binding.launchesRecyclerview.scrollToPosition(0)
         }
+
+        setHasOptionsMenu(true)
     }
 
-    private fun setupMenu() {
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-
-                menuInflater.inflate(R.menu.menu_launches, menu)
-                val searchItem = menu.findItem(R.id.action_search)
-                val searchView = searchItem.actionView as SearchView
-                searchView.maxWidth = Integer.MAX_VALUE
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String): Boolean {
-                        return true
-                    }
-
-                    override fun onQueryTextChange(query: String): Boolean {
-                        searchDB(query)
-                        return true
-                    }
-                })
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_launches, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.maxWidth = Integer.MAX_VALUE
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
             }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                return when (menuItem.itemId) {
-                    R.id.byTitle -> {
-                        currentSortingType = SortingType.ByTitle
-                        launchesViewModel.searchInDB("", currentSortingType)
-                        binding.sortingChip.text = getString(R.string.sortedbytitle)
-                        true
-                    }
-                    R.id.byDateASC -> {
-                        currentSortingType = SortingType.ByDateASC
-                        launchesViewModel.searchInDB("", currentSortingType)
-                        binding.sortingChip.text = getString(R.string.sortedbyAsc)
-                        true
-                    }
-                    R.id.byDateDESC -> {
-                        currentSortingType = SortingType.ByDateDESC
-                        launchesViewModel.searchInDB("", currentSortingType)
-                        binding.sortingChip.text = getString(R.string.sortedbydesc)
-                        true
-                    }
-                    else -> false
-                }
+            override fun onQueryTextChange(query: String): Boolean {
+                viewModel.searchInDB(query, SortingType.ByTitle)
+                return true
             }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        })
     }
 
-    private fun observers() {
-        // Observing the list of ships LiveData
-        launchesViewModel.listOfLaunches.observe(viewLifecycleOwner) { listOfLaunches: List<Launch> ->
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.byTitle -> {
+                viewModel.searchInDB("", SortingType.ByTitle)
+                binding.sortingChip.text = getString(R.string.sortedbytitle)
+                true
+            }
+            R.id.byDateASC -> {
+                viewModel.searchInDB("", SortingType.ByDateASC)
+                binding.sortingChip.text = getString(R.string.sortedbyAsc)
+                true
+            }
+            R.id.byDateDESC -> {
+                viewModel.searchInDB("", SortingType.ByDateDESC)
+                binding.sortingChip.text = getString(R.string.sortedbydesc)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.listOfLaunches.observe(viewLifecycleOwner) { listOfLaunches ->
             adapter.setNewData(listOfLaunches)
         }
-        // Observing the clicked ship LiveData
-        launchesViewModel.selectedLaunch.observe(viewLifecycleOwner) { clickedLaunch: SingleEvent<Launch> ->
-            // The single even will return the content(launch) only if it was never handled before,
-            // if it was handled before,  it will return null.
-            clickedLaunch.getContentIfNotHandled()
-                ?.let { launch ->  // if the method is not returning null, get use the content.
-                    startDetailsFragment(launch)
-                }
+
+        viewModel.selectedLaunch.observe(viewLifecycleOwner) { clickedLaunch ->
+            clickedLaunch.getContentIfNotHandled()?.let { launch ->
+                startDetailsFragment(launch)
+            }
         }
     }
 
-    private fun startDetailsFragment(ship: Launch?) {
-        val bundle: Bundle = bundleOf()
-        bundle.putParcelable("selectedLaunch", ship)
+    private fun startDetailsFragment(launch: Launch?) {
+        val bundle = Bundle().apply {
+            putParcelable(getString(R.string.selectedLaunch), launch)
+        }
         findNavController().navigate(R.id.action_nav_launches_to_nav_launches_details, bundle)
-    }
-
-    private fun searchDB(query: String) {
-        launchesViewModel.searchInDB(query, currentSortingType)
     }
 
     override fun onDestroyView() {

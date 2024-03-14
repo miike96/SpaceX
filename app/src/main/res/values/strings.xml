@@ -39,4 +39,15 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="favorites">Favoritos</string>
+    <string name="selectedLaunch">Lanzamiento seleccionado</string>
+    <string name="novedades">Novedades en la App</string>
+    <string name="notice">Esta app, se ha creado para poder estar conectada a la api de SpaceX, muestra tanto los lanzamientos como los barcos que han ayudado a tales</string>
+    <string name="back">Volver</string>
+    <string name="credits">Aplicación realizada y desarrollada para la clase de 2DAM por Miguel López Rodríguez</string>
+    <string name="launch_details">Detalles de lanzamiento</string>
+    <string name="ships_details">Detalles de los barcos</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="notices">Noticias</string>
+    <string name="username_hint">Introduce su usuario</string>
+    <string name="remember_user">Recordar usuario</string>
 </resources>

@@ -39,28 +39,22 @@ class ShipsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        /* ViewModel */
         shipsViewModel =
             ViewModelProvider(this)[ShipsViewModel::class.java]
 
-        /* Binding */
         _binding = FragmentShipsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        /* Adapter */
         adapter = shipsViewModel.getShipsAdapter()
         binding.shipsRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.shipsRecyclerview.adapter = adapter
-        /* Setup Menu */
+
         setupMenu()
 
-        /* Get data from database to be displayed */
         decideFirstTimeFetching()
 
-        /* Display the data on the UI */
         shipsViewModel.populateUI()
 
-        /* Setting Observers */
         observers()
 
         return root
@@ -89,7 +83,6 @@ class ShipsFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.byTitle -> {
                         currentSortingState = SortingType.ByTitle
@@ -102,17 +95,11 @@ class ShipsFragment : Fragment() {
     }
 
     private fun decideFirstTimeFetching() {
-        // If its the first running the app -> update the database,
-        // Also save in shared pref a Boolean that keeps track of "isFirstRun"
-        // After the first time, it will not update the DB (at least not from here), only fetch data from it.
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        val isFirstRun = sharedPref?.getBoolean("isFirstRun", true) // the default is true
+        val isFirstRun = sharedPref?.getBoolean("isFirstRun", true)
         if (isFirstRun == true) {
-            // Check if there is an internet connection
             if (shipsViewModel.networkStatusChecker.hasInternetConnection()) {
-                // If its the first time running the app, update the DB
                 shipsViewModel.updateDB()
-                // Set shared pref that it is no longer first time
                 with(sharedPref.edit()) {
                     putBoolean("isFirstRun", false)
                     apply()
@@ -124,20 +111,15 @@ class ShipsFragment : Fragment() {
     }
 
     private fun observers() {
-        // Observing the list of ships LiveData
         shipsViewModel.listOfShips.observe(viewLifecycleOwner) { listOfShips: List<Ship> ->
             adapter.setNewData(listOfShips)
         }
-        // Observing the clicked ship LiveData
         shipsViewModel.selectedShip.observe(viewLifecycleOwner) { clickedShip: SingleEvent<Ship> ->
-            // The single even will return the content(ship) only if it was never handled before,
-            // if it was handled before,  it will return null.
             clickedShip.getContentIfNotHandled()
-                ?.let { ship ->  // if the method is not returning null, get use the content.
+                ?.let { ship ->
                     startDetailsFragment(ship)
                 }
         }
-
     }
 
     private fun startDetailsFragment(ship: Ship?) {
@@ -154,5 +136,4 @@ class ShipsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }

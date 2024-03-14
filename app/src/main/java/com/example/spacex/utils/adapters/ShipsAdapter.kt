@@ -39,12 +39,9 @@ class ShipsAdapter @Inject constructor(private val listener: OnItemClickListener
     }
 
     class ShipsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageview: ImageView =
-            itemView.findViewById(R.id.profile_image)
-        var title: TextView =
-            itemView.findViewById(R.id.title_text_view)
-        var itemLayout: ConstraintLayout =
-            itemView.findViewById(R.id.item_layout)
+        var imageView: ImageView = itemView.findViewById(R.id.profile_image)
+        var title: TextView = itemView.findViewById(R.id.title_text_view)
+        var itemLayout: ConstraintLayout = itemView.findViewById(R.id.item_layout)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipsViewHolder {
@@ -57,7 +54,6 @@ class ShipsAdapter @Inject constructor(private val listener: OnItemClickListener
     }
 
     override fun onBindViewHolder(holder: ShipsViewHolder, position: Int) {
-
         val item = list[position]
 
         // --- Setting the image --- //
@@ -66,7 +62,7 @@ class ShipsAdapter @Inject constructor(private val listener: OnItemClickListener
             Picasso.get().load(Uri.parse(imageUrl))
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.ship)
-                .into(holder.imageview)
+                .into(holder.imageView)
         }
 
         // --- Setting the title --- //
@@ -76,7 +72,6 @@ class ShipsAdapter @Inject constructor(private val listener: OnItemClickListener
         holder.itemLayout.setOnClickListener {
             listener.onItemClicked(item)
         }
-
     }
 
     override fun getItemCount(): Int {

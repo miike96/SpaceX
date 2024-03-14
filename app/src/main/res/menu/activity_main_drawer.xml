@@ -16,5 +16,10 @@
             android:id="@+id/nav_fav"
             android:icon="@drawable/fav"
             android:title="@string/favorites" />
+        <item
+                android:id="@+id/nav_login"
+                android:icon="@android:drawable/btn_star"
+                android:title="@string/login" />
+
     </group>
 </menu>

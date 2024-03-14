@@ -1,6 +1,5 @@
 package com.example.spacex.utils.adapters
 
-
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -16,74 +15,62 @@ import com.example.spacex.utils.fromUnixToFormatted
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
-class LaunchesAdapter @Inject constructor(private val listener: LaunchesAdapter.OnItemClickListener) :
+class LaunchesAdapter @Inject constructor(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<LaunchesAdapter.LaunchesViewHolder>() {
 
-    var list: MutableList<Launch> = mutableListOf()
+    private var list: MutableList<Launch> = mutableListOf()
 
-    fun interface OnItemClickListener{
-        fun onItemClicked(
-            item: Launch
-        )
-    }
-
-    // add new data
     fun setNewData(newData: List<Launch>) {
-        // passing the new and old list into the callback
         val diffCallback = DiffUtilCallbackLaunches(list, newData)
-        // we get the result
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-        // we clear the old list
         list.clear()
-        // and replace it with the new list
         list.addAll(newData)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    class LaunchesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageview: ImageView =
-            itemView.findViewById(R.id.profile_image)
-        var title: TextView =
-            itemView.findViewById(R.id.title_text_view)
-        var date: TextView =
-            itemView.findViewById(R.id.date_text_view)
-        var itemLayout: ConstraintLayout =
-            itemView.findViewById(R.id.item_layout)
+    fun interface OnItemClickListener {
+        fun onItemClicked(item: Launch)
     }
 
+    inner class LaunchesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var imageView: ImageView = itemView.findViewById(R.id.profile_image)
+        var title: TextView = itemView.findViewById(R.id.title_text_view)
+        var date: TextView = itemView.findViewById(R.id.date_text_view)
+        var itemLayout: ConstraintLayout = itemView.findViewById(R.id.item_layout)
+
+        fun bind(item: Launch) {
+            // Setting the image
+            item.links?.patch?.large?.let { imageUrl ->
+                Picasso.get().load(Uri.parse(imageUrl))
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.ship)
+                    .into(imageView)
+            }
+
+            // Setting the title
+            title.text = item.name
+
+            // Setting the date
+            val dateFormatted = item.date_unix.fromUnixToFormatted()
+            date.text = dateFormatted
+
+            // Sending the clicked item as callback
+            itemLayout.setOnClickListener {
+                listener.onItemClicked(item)
+            }
+        }
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LaunchesViewHolder {
-        return LaunchesViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_view_holder,
-                parent, false
-            )
-        )
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_view_holder, parent, false)
+        return LaunchesViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: LaunchesViewHolder, position: Int) {
-
         val item = list[position]
-
-        // --- Setting the image --- //
-        val imageUrl = item.links?.patch?.large
-        if (imageUrl != null) {
-            Picasso.get().load(Uri.parse(imageUrl))
-                .placeholder(R.drawable.loading)
-                .error(R.drawable.ship)
-                .into(holder.imageview)
-        }
-
-        // --- Setting the title --- //
-        holder.title.text = item.name
-
-        // --- Setting the date --- //
-        val dateFormatted = item.date_unix.fromUnixToFormatted()
-        holder.date.text = dateFormatted
-
-        // -- Sending the clicked item as callback -- //
-        holder.itemLayout.setOnClickListener {
-            listener.onItemClicked(item)
-        }
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int {
@@ -91,32 +78,21 @@ class LaunchesAdapter @Inject constructor(private val listener: LaunchesAdapter.
     }
 }
 
-
 class DiffUtilCallbackLaunches(
     private val oldList: List<Launch>,
     private val newList: List<Launch>
 ) :
     DiffUtil.Callback() {
 
-    // old size
     override fun getOldListSize(): Int = oldList.size
 
-    // new list size
     override fun getNewListSize(): Int = newList.size
 
-    // if items are same
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return oldItem.name == newItem.name
+        return oldList[oldItemPosition].name == newList[newItemPosition].name
     }
 
-    // check if contents are same
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
-        return oldItem == newItem
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }
-
