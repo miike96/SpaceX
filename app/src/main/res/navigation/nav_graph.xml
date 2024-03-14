@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_ships"
-        android:name="com.mikeschvedov.spacex.ui.ships.listscreen.ShipsFragment"
+        android:name="com.example.spacex.ui.ships.listscreen.ShipsFragment"
         android:label="@string/ships"
         tools:layout="@layout/fragment_ships" >
 
@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/nav_launches"
-        android:name="com.mikeschvedov.spacex.ui.launches.listscreen.LaunchesFragment"
+        android:name="com.example.spacex.ui.launches.listscreen.LaunchesFragment"
         android:label="@string/launches"
         tools:layout="@layout/fragment_launches" >
 
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/nav_launches_details"
-        android:name="com.mikeschvedov.spacex.ui.launches.detailscreen.LaunchDetailsFragment"
+        android:name="com.example.spacex.ui.launches.detailscreen.LaunchDetailsFragment"
         android:label="Launch Details"
         tools:layout="@layout/fragment_details_launches" >
         <action
@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/nav_ships_details"
-        android:name="com.mikeschvedov.spacex.ui.ships.detailscreen.ShipsDetailsFragment"
+        android:name="com.example.spacex.ui.ships.detailscreen.ShipsDetailsFragment"
         android:label="Ship Details"
         tools:layout="@layout/fragment_details_ships" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fav"
-            android:name="com.mikeschvedov.spacex.FavoritesFragment"
+            android:name="com.example.spacex.FavoritesFragment"
             android:label="fragment_favorites"
             tools:layout="@layout/fragment_favorites" />
 </navigation>

@@ -14,7 +14,7 @@
             android:title="@string/launches" />
         <item
             android:id="@+id/nav_fav"
-            android:icon="@android:drawable/btn_star"
+            android:icon="@drawable/fav"
             android:title="@string/favorites" />
     </group>
 </menu>
